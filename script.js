@@ -141,6 +141,26 @@ var REELS = [
   bindCopy('copyBtn', 'mailText', 'Email');
   bindCopy('copyPhoneBtn', 'phoneText', 'Phone number');
 
+  /* Mobile hamburger menu */
+  var nav = document.getElementById('siteNav');
+  var navToggle = document.getElementById('navToggle');
+  var navMenu = document.getElementById('navMenu');
+  if (nav && navToggle && navMenu) {
+    function setMenu(open) {
+      nav.classList.toggle('open', open);
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    navToggle.addEventListener('click', function () {
+      setMenu(!nav.classList.contains('open'));
+    });
+    navMenu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () { setMenu(false); });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('open')) setMenu(false);
+    });
+  }
+
   /* Scroll reveal */
   var reveals = document.querySelectorAll('.reveal');
   if (!reduced && 'IntersectionObserver' in window) {

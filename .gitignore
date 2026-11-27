@@ -1,0 +1,7 @@
+# Unused saved webpage assets
+my-details/images/bablu.html
+my-details/images/bablu_files/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -305,6 +305,18 @@ var REELS = [
       }
     });
 
+    var adminTrigger = document.getElementById('adminTrigger');
+    if (adminTrigger) {
+      adminTrigger.addEventListener('click', function () {
+        if (adminActive) {
+          var reelsSec = document.getElementById('reels');
+          if (reelsSec) reelsSec.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          signInAdmin();
+        }
+      });
+    }
+
     document.addEventListener('keydown', function (e) {
       if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
         e.preventDefault();

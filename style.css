@@ -314,6 +314,41 @@ section.block { padding-block: 84px; border-bottom: 1px solid var(--line); }
 
 footer { padding-block: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; border-top: 1px solid var(--line); }
 
+/* Admin-only UI */
+.reels-head-actions { display: grid; gap: 12px; justify-items: end; }
+.admin-bar { display: flex; flex-wrap: wrap; gap: 10px; }
+.admin-bar[hidden], .admin-export[hidden] { display: none; }
+.admin-trigger {
+  background: none; border: 0; padding: 0; color: inherit; font: inherit;
+  letter-spacing: inherit; text-transform: inherit; cursor: pointer; opacity: 0.6;
+}
+.admin-trigger:hover { opacity: 1; color: var(--accent); }
+.reel-remove {
+  position: absolute; top: 10px; right: 10px; z-index: 3;
+  padding: 4px 8px; border-radius: 3px; border: 1px solid rgba(255, 77, 94, 0.7);
+  background: rgba(8, 9, 14, 0.85); color: var(--fg); font-family: var(--mono); font-size: 11px;
+  cursor: pointer;
+}
+.reel-remove:hover { background: var(--accent); color: var(--accent-ink); }
+.admin-modal { max-width: min(94vw, 520px); }
+.admin-form { display: grid; gap: 14px; }
+.admin-form label { display: grid; gap: 6px; }
+.admin-form input[type="text"],
+.admin-form input[type="url"],
+.admin-form input[type="file"] {
+  width: 100%; padding: 10px 12px; border-radius: 3px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--fg);
+  font-family: var(--body); font-size: 14px;
+}
+.admin-hint { margin: 0; font-size: 13px; color: var(--accent); min-height: 1.2em; }
+.admin-export { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+.admin-export pre {
+  margin: 0; padding: 10px 12px; border-radius: 3px;
+  background: var(--bg); border: 1px solid var(--line); overflow-x: auto;
+  font-family: var(--mono); font-size: 12px; color: #E2E0EC;
+}
+@media (max-width: 640px) { .reels-head-actions { justify-items: start; } }
+
 @media (max-width: 640px) {
   .nav { flex-wrap: wrap; gap: 10px 12px; padding-block: 10px; }
   .nav .mark { font-size: 22px; padding: 6px 11px; }

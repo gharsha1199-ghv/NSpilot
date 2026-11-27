@@ -1,4 +1,15 @@
 /* ===== Edit these to personalise the site ===== */
+var ADMIN_EMAILS = ["komreganesh338@gmail.com"];
+var CLOUDINARY_CLOUD = "py7yievr";
+var CLOUDINARY_PRESET = "bablu-reels";
+var firebaseConfig = {
+  apiKey: "AIzaSyAgALqr6RtT9cmeFQ4ZavMaubsJLop1cYs",
+  authDomain: "bablu-editzz.firebaseapp.com",
+  projectId: "bablu-editzz",
+  storageBucket: "bablu-editzz.firebasestorage.app",
+  messagingSenderId: "676770700175",
+  appId: "1:676770700175:web:fd125929dd686d208a49fa"
+};
 var REELS = [
   { title: "Dandiya nights", tag: "Edited Reel", time: "00:00:00:00", video: "my-details/edited-videos/lv_0_20261014033746.mp4", g: "linear-gradient(160deg,#3a1c2e,#16182a 70%)" },
   { title: "Edited Reel 02", tag: "Edited Reel", time: "00:00:00:00", video: "my-details/edited-videos/20261127105451_instagram_5.mp4", g: "linear-gradient(160deg,#1c2f3a,#14161f 70%)" },
@@ -37,7 +48,9 @@ var REELS = [
     });
   }
 
-  REELS.forEach(function (r) {
+  function renderReel(r, opts) {
+    var wrap = document.createElement('div');
+    wrap.style.position = 'relative';
     var el = document.createElement(r.video ? 'button' : 'a');
     el.className = 'reel';
     if (r.video) {
@@ -49,15 +62,15 @@ var REELS = [
       el.rel = 'noopener';
       el.setAttribute('aria-label', 'Watch ' + r.title + ' on Instagram');
     }
-    el.style.setProperty('--g', r.g);
+    el.style.setProperty('--g', r.g || 'linear-gradient(160deg,#3a1c2e,#16182a 70%)');
     el.innerHTML =
       '<span class="tc"></span>' +
       '<span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg></span>' +
       '<span class="meta"><h3></h3><span></span></span>';
     var tcEl = el.querySelector('.tc');
-    tcEl.textContent = r.time;
+    tcEl.textContent = r.time || '00:00:00:00';
     el.querySelector('h3').textContent = r.title;
-    el.querySelector('.meta span').textContent = r.tag;
+    el.querySelector('.meta span').textContent = r.tag || 'Edited Reel';
 
     if (r.video) {
       var thumb = document.createElement('video');
@@ -88,8 +101,32 @@ var REELS = [
       });
     }
 
-    grid.appendChild(el);
-  });
+    if (opts && opts.onRemove) {
+      var rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'reel-remove';
+      rm.textContent = 'Remove';
+      rm.hidden = !isAdmin();
+      rm.addEventListener('click', function (e) {
+        e.stopPropagation();
+        opts.onRemove(wrap);
+      });
+      wrap.appendChild(rm);
+    }
+
+    wrap.appendChild(el);
+    if (opts && opts.prepend && grid.firstChild) {
+      grid.insertBefore(wrap, grid.firstChild);
+    } else {
+      grid.appendChild(wrap);
+    }
+    return wrap;
+  }
+
+  var adminActive = false;
+  function isAdmin() { return adminActive; }
+
+  REELS.forEach(function (r) { renderReel(r); });
 
   /* Timeline clips (deterministic pseudo-random) */
   function rng(seed) { var s = seed * 9301 + 49297; return function () { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
@@ -175,5 +212,201 @@ var REELS = [
     reveals.forEach(function (sec) { io.observe(sec); });
   } else {
     reveals.forEach(function (sec) { sec.classList.add('in'); });
+  }
+
+  /* Firebase Auth + Firestore live reels (admin-only upload, visible to all visitors) */
+  var adminBar = document.getElementById('adminBar');
+  var addVideoBtn = document.getElementById('addVideoBtn');
+  var lockAdminBtn = document.getElementById('lockAdminBtn');
+  var adminModal = document.getElementById('adminModal');
+  var adminModalClose = document.getElementById('adminModalClose');
+  var adminForm = document.getElementById('adminForm');
+  var adminError = document.getElementById('adminError');
+  var adminSubmitBtn = document.getElementById('adminSubmitBtn');
+
+  function syncAdminUi() {
+    if (adminBar) adminBar.hidden = !adminActive;
+    document.querySelectorAll('.reel-remove').forEach(function (btn) { btn.hidden = !adminActive; });
+  }
+
+  function isAuthorizedEmail(email) {
+    if (!email) return false;
+    var lower = email.toLowerCase();
+    return ADMIN_EMAILS.some(function (a) { return a.toLowerCase() === lower; });
+  }
+
+  if (typeof firebase !== 'undefined') {
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    var auth = firebase.auth();
+    var db = firebase.firestore();
+    var cloudNodes = [];
+
+    function clearCloudReels() {
+      cloudNodes.forEach(function (n) { n.remove(); });
+      cloudNodes = [];
+    }
+
+    db.collection('reels').orderBy('createdAt', 'asc').onSnapshot(function (snap) {
+      clearCloudReels();
+      snap.forEach(function (doc) {
+        var data = doc.data() || {};
+        var node = renderReel({
+          title: data.title || 'New Edit',
+          tag: data.tag || 'Edited Reel',
+          time: '00:00:00:00',
+          video: data.video || undefined,
+          url: data.url || undefined,
+          g: data.g
+        }, {
+          prepend: true,
+          onRemove: function () {
+            if (!adminActive) return;
+            if (!window.confirm('Remove "' + (data.title || 'this reel') + '" for all visitors?')) return;
+            db.collection('reels').doc(doc.id).delete().catch(function (err) {
+              window.alert('Could not delete: ' + err.message);
+            });
+          }
+        });
+        cloudNodes.push(node);
+      });
+      syncAdminUi();
+    }, function () {
+      /* Firestore unavailable or rules not set yet — keep static REELS visible */
+    });
+
+    function signInAdmin() {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch(function (err) {
+        if (err && (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment')) {
+          auth.signInWithRedirect(provider);
+        } else if (err && err.code !== 'auth/popup-closed-by-user') {
+          window.alert('Sign-in failed: ' + err.message);
+        }
+      });
+    }
+
+    auth.onAuthStateChanged(function (user) {
+      if (user) {
+        if (isAuthorizedEmail(user.email)) {
+          adminActive = true;
+          syncAdminUi();
+        } else {
+          adminActive = false;
+          syncAdminUi();
+          auth.signOut();
+          window.alert('Access denied: ' + user.email + ' is not an authorized admin.');
+        }
+      } else {
+        adminActive = false;
+        syncAdminUi();
+        if (window.location.search.indexOf('admin') !== -1) {
+          signInAdmin();
+        }
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault();
+        if (!adminActive) signInAdmin();
+      }
+    });
+
+    if (lockAdminBtn) {
+      lockAdminBtn.addEventListener('click', function () {
+        auth.signOut();
+      });
+    }
+
+    if (addVideoBtn && adminModal) {
+      addVideoBtn.addEventListener('click', function () {
+        adminError.textContent = '';
+        adminForm.reset();
+        adminSubmitBtn.disabled = false;
+        adminModal.showModal();
+      });
+    }
+
+    if (adminModalClose && adminModal) {
+      adminModalClose.addEventListener('click', function () { adminModal.close(); });
+      adminModal.addEventListener('click', function (e) {
+        if (e.target === adminModal) adminModal.close();
+      });
+    }
+
+    if (adminForm) {
+      adminForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!adminActive) { adminError.textContent = 'Please sign in as admin first.'; return; }
+
+        var title = document.getElementById('newVideoTitle').value.trim();
+        var tag = document.getElementById('newVideoTag').value.trim() || 'Edited Reel';
+        var fileInput = document.getElementById('newVideoFile');
+        var url = document.getElementById('newVideoUrl').value.trim();
+        var file = fileInput.files && fileInput.files[0];
+
+        if (!title) { adminError.textContent = 'Please enter a video title.'; return; }
+        if (!file && !url) { adminError.textContent = 'Choose a video file or paste an Instagram/video URL.'; return; }
+
+        adminSubmitBtn.disabled = true;
+        adminError.textContent = file ? 'Uploading video...' : 'Saving reel...';
+
+        function saveDoc(docData) {
+          docData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+          db.collection('reels').add(docData).then(function () {
+            adminSubmitBtn.disabled = false;
+            adminModal.close();
+          }).catch(function (err) {
+            adminSubmitBtn.disabled = false;
+            adminError.textContent = 'Save failed: ' + err.message;
+          });
+        }
+
+        if (file) {
+          var form = new FormData();
+          form.append('file', file);
+          form.append('upload_preset', CLOUDINARY_PRESET);
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', 'https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/video/upload');
+          xhr.upload.onprogress = function (evt) {
+            if (evt.lengthComputable) {
+              var pct = Math.round((evt.loaded / evt.total) * 100);
+              adminError.textContent = 'Uploading video... ' + pct + '%';
+            }
+          };
+          xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                var res = JSON.parse(xhr.responseText);
+                saveDoc({ title: title, tag: tag, video: res.secure_url });
+              } catch (err) {
+                adminSubmitBtn.disabled = false;
+                adminError.textContent = 'Upload error: invalid server response.';
+              }
+            } else {
+              adminSubmitBtn.disabled = false;
+              var msg = 'Upload failed (' + xhr.status + ').';
+              try {
+                var errJson = JSON.parse(xhr.responseText);
+                if (errJson.error && errJson.error.message) msg = errJson.error.message;
+              } catch (e) {}
+              adminError.textContent = msg;
+            }
+          };
+          xhr.onerror = function () {
+            adminSubmitBtn.disabled = false;
+            adminError.textContent = 'Network error while uploading video.';
+          };
+          xhr.send(form);
+        } else {
+          var isDirectVideo = /\.(mp4|mov|webm)(\?|$)/i.test(url);
+          var payload = { title: title, tag: tag };
+          if (isDirectVideo) payload.video = url;
+          else payload.url = url;
+          saveDoc(payload);
+        }
+      });
+    }
   }
 })();

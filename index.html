@@ -84,7 +84,13 @@
           <span class="label">01 &middot; Showreel Bin</span>
           <h2>Selected reels</h2>
         </div>
-        <p>Hover to preview, tap any reel to watch in full screen with sound.</p>
+        <div class="reels-head-actions">
+          <p>Hover to preview, tap any reel to watch in full screen with sound.</p>
+          <div class="admin-bar" id="adminBar" hidden>
+            <button class="btn primary" id="addVideoBtn" type="button">+ Add new video</button>
+            <button class="btn" id="lockAdminBtn" type="button">Sign out</button>
+          </div>
+        </div>
       </div>
       <div class="reels" id="reelGrid"></div>
       <p class="note">All edits play directly on the site. Customize reel titles or links anytime in <code>script.js</code>.</p>
@@ -229,6 +235,36 @@
   <video id="videoModalPlayer" controls playsinline></video>
 </dialog>
 
-<script src="script.js"></script>
+<dialog class="video-modal admin-modal" id="adminModal" aria-label="Add new video">
+  <div class="video-modal-bar">
+    <span class="label">Admin &middot; Add New Video</span>
+    <button class="btn" id="adminModalClose" type="button">Close</button>
+  </div>
+  <form class="admin-form" id="adminForm">
+    <label>
+      <span class="label">Video Title</span>
+      <input type="text" id="newVideoTitle" placeholder="e.g. Birthday Reel" required>
+    </label>
+    <label>
+      <span class="label">Tag / Category</span>
+      <input type="text" id="newVideoTag" placeholder="e.g. Edited Reel" value="Edited Reel">
+    </label>
+    <label>
+      <span class="label">Upload Video File (.mp4 / .mov)</span>
+      <input type="file" id="newVideoFile" accept="video/*">
+    </label>
+    <label>
+      <span class="label">Or Instagram / Video Link</span>
+      <input type="url" id="newVideoUrl" placeholder="https://www.instagram.com/reel/...">
+    </label>
+    <p class="admin-hint" id="adminError" role="status"></p>
+    <button class="btn primary" id="adminSubmitBtn" type="submit">Publish Video</button>
+  </form>
+</dialog>
+
+<script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script defer src="script.js"></script>
 </body>
 </html>

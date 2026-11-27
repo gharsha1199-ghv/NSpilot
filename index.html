@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bablu Editzz — Video Editor</title>
+<link rel="shortcut icon" href="my-details/images/Screenshot 2026-11-27 105759.png" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="wrap">
+    <nav class="nav">
+      <a class="mark" href="#top">Bablu<span>.Editzz</span></a>
+      <ul>
+        <li><a href="#reels">Reels</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<header class="hero" id="top">
+  <div class="wrap hero-inner">
+    <div class="status-pill">
+      <span class="rec-dot" aria-hidden="true"></span>
+      <span class="label">Video editor &middot; Available for new projects</span>
+    </div>
+    <h1>I cut <span>stories</span><br>that stop the scroll.</h1>
+    <p class="sub"><strong>Short-form reels, YouTube videos and brand ads</strong> edited with sharp pacing, clean sound and color that matches the mood. Fast turnaround, clear communication.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="#reels">Watch the reels</a>
+      <a class="btn" href="#pricing">View charges</a>
+      <a class="btn" href="#contact">Start a project</a>
+    </div>
+  </div>
+  <div class="timeline" aria-hidden="true">
+    <div class="wrap">
+      <div class="tl-head">
+        <span class="label">Sequence 01 &middot; 24 fps &middot; Bablu Editzz</span>
+        <span class="tl-time" id="tc">00:00:00:00</span>
+      </div>
+      <div class="tl-tracks" id="tracks">
+        <div class="track" data-seed="1"></div>
+        <div class="track" data-seed="2"></div>
+        <div class="track" data-seed="3"></div>
+        <div class="playhead" id="playhead"></div>
+      </div>
+    </div>
+  </div>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Reels &amp; Shorts</span><i>&diams;</i>
+      <span>Beat-Synced Cuts</span><i>&diams;</i>
+      <span>Color Grading</span><i>&diams;</i>
+      <span>Sound Design</span><i>&diams;</i>
+      <span>Motion Graphics</span><i>&diams;</i>
+      <span>Visual Storytelling</span><i>&diams;</i>
+      <span>Reels &amp; Shorts</span><i>&diams;</i>
+      <span>Beat-Synced Cuts</span><i>&diams;</i>
+      <span>Color Grading</span><i>&diams;</i>
+      <span>Sound Design</span><i>&diams;</i>
+      <span>Motion Graphics</span><i>&diams;</i>
+      <span>Visual Storytelling</span><i>&diams;</i>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="block reveal" id="reels">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="label">01 &middot; Showreel Bin</span>
+          <h2>Selected reels</h2>
+        </div>
+        <p>Hover to preview, tap any reel to watch in full screen with sound.</p>
+      </div>
+      <div class="reels" id="reelGrid"></div>
+      <p class="note">All edits play directly on the site. Customize reel titles or links anytime in <code>script.js</code>.</p>
+    </div>
+  </section>
+
+  <section class="block reveal" id="services">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="label">02 &middot; Capabilities</span>
+          <h2>What I edit</h2>
+        </div>
+        <p>One editor from raw footage to final export.</p>
+      </div>
+      <div class="services">
+        <div class="service"><span class="label">9:16</span><h3>Reels &amp; shorts</h3><p>Hook-first edits for Instagram, TikTok and YouTube Shorts with captions, beat-synced cuts and punchy transitions.</p></div>
+        <div class="service"><span class="label">16:9</span><h3>YouTube videos</h3><p>Long-form cuts with tight pacing, b-roll, sound design and thumbnails-ready key frames.</p></div>
+        <div class="service"><span class="label">Promo</span><h3>Ads &amp; brand films</h3><p>Product and event promos cut to a brief, with motion graphics and on-brand color.</p></div>
+        <div class="service"><span class="label">Finish</span><h3>Color &amp; sound</h3><p>Color grading, audio cleanup, music mixing and exports for every platform.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block reveal" id="pricing">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="label">03 &middot; Editing Charges</span>
+          <h2>Reel packages</h2>
+        </div>
+        <p>Simple, transparent pricing for creators and brands.</p>
+      </div>
+      <div class="pricing">
+        <div class="price-card">
+          <span class="label">Single Edit</span>
+          <h3>1 Reel</h3>
+          <div class="price">&#8377;999 <span>/ per reel</span></div>
+          <p>Ideal for trying a single high-impact reel with beat-synced cuts, transitions, and color.</p>
+          <a class="btn" href="tel:+919010304657">Book 1 Reel</a>
+        </div>
+        <div class="price-card featured">
+          <span class="badge">Popular Pack</span>
+          <span class="label">Best Value</span>
+          <h3>2 Reels</h3>
+          <div class="price">&#8377;1,499 <span>/ 2 reels</span></div>
+          <p>Two polished reels with cohesive pacing, captions, sound design, and color grading.</p>
+          <a class="btn primary" href="tel:+919010304657">Book 2 Reels</a>
+        </div>
+        <div class="price-card">
+          <span class="label">Creator Bundle</span>
+          <h3>3 Reels</h3>
+          <div class="price">&#8377;2,099 <span>/ 3 reels</span></div>
+          <p>Full mini-series bundle for creators and pages posting consistently every week.</p>
+          <a class="btn" href="tel:+919010304657">Book 3 Reels</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block reveal" id="about">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="label">04 &middot; Behind the Cut</span>
+          <h2>About</h2>
+        </div>
+      </div>
+      <div class="about">
+        <div>
+          <p>Hi, I'm Komre Ganesh, a passionate and creative Video Editor from Nirmal District, currently pursuing my Bachelor of Pharmacy (B.Pharmacy) at Malla Reddy College.</p>
+          <p>Alongside my academic journey, I have a strong passion for video editing and visual storytelling. I enjoy transforming raw footage into engaging, creative, and visually appealing content. I continuously explore new editing techniques, creative transitions, and storytelling approaches to bring ideas to life through videos.</p>
+          <p>I believe every video has a story to tell, and my goal is to make each story memorable through creativity and attention to detail.</p>
+          <span class="label">Software</span>
+          <div class="chips">
+            <span class="chip">Premiere Pro</span>
+            <span class="chip">After Effects</span>
+            <span class="chip">DaVinci Resolve</span>
+            <span class="chip">CapCut</span>
+            <span class="chip">Audition</span>
+          </div>
+        </div>
+        <div class="facts">
+          <div class="fact"><span class="label">Editor</span><b>Komre Ganesh</b></div>
+          <div class="fact"><span class="label">Based in</span><b>Nirmal District</b></div>
+          <div class="fact"><span class="label">Specialty</span><b>Reels, YouTube, ads</b></div>
+          <div class="fact"><span class="label">First cut</span><b>Within 48 hours</b></div>
+          <div class="fact"><span class="label">Revisions</span><b>2 rounds included</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact reveal" id="contact">
+    <div class="wrap">
+      <span class="label">05 &middot; Next up</span>
+      <h2>Let's cut<br>something <span>good.</span></h2>
+      <div class="contact-layout">
+        <div class="contact-grid">
+          <div class="contact-card">
+            <span class="label">Email</span>
+            <div class="mail">
+              <code id="mailText">komreganesh338@gmail.com</code>
+              <button class="btn" id="copyBtn" type="button">Copy email</button>
+            </div>
+          </div>
+          <div class="contact-card">
+            <span class="label">Phone / Call</span>
+            <div class="mail">
+              <a href="tel:+919010304657"><code id="phoneText">+91 9010304657</code></a>
+              <button class="btn" id="copyPhoneBtn" type="button">Copy number</button>
+            </div>
+          </div>
+          <div class="copied" id="copied" aria-live="polite"></div>
+          <div class="cta-row">
+            <a class="btn primary" id="igLink" href="https://www.instagram.com/_.ns_pilot__?utm_source=ig_web_button_share_sheet&amp;lqvp=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener">Message on Instagram</a>
+            <a class="btn" href="tel:+919010304657">Call +91 9010304657</a>
+          </div>
+        </div>
+        <div class="ig-box">
+          <a class="ig-preview" href="https://www.instagram.com/_.ns_pilot__?utm_source=ig_web_button_share_sheet&amp;lqvp=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener">
+            <img src="my-details/images/PROFILEIMG.png" alt="Komre Ganesh Instagram profile preview">
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="wrap">
+  <footer>
+    <span class="label">&copy; 2026 BABLU editzz &middot; Komre Ganesh</span>
+    <span class="label">Edited with care</span>
+  </footer>
+</div>
+
+<dialog class="video-modal" id="videoModal" aria-label="Video player">
+  <div class="video-modal-bar">
+    <span class="label" id="videoModalTitle">Reel Preview</span>
+    <button class="btn" id="videoModalClose" type="button">Close</button>
+  </div>
+  <video id="videoModalPlayer" controls playsinline></video>
+</dialog>
+
+<script src="script.js"></script>
+</body>
+</html>

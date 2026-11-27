@@ -235,11 +235,36 @@ var REELS = [
     return ADMIN_EMAILS.some(function (a) { return a.toLowerCase() === lower; });
   }
 
+  var signInAdmin = function () {
+    if (window.location.protocol === 'file:') {
+      window.alert('Google Sign-In cannot run on file:///. Open the site with Live Server (http://localhost:5500) or your GitHub Pages URL.');
+      return;
+    }
+    window.alert('Firebase did not finish loading. Check your internet connection and refresh the page.');
+  };
+
+  var adminTrigger = document.getElementById('adminTrigger');
+  if (adminTrigger) {
+    adminTrigger.addEventListener('click', function () {
+      if (adminActive) {
+        var reelsSec = document.getElementById('reels');
+        if (reelsSec) reelsSec.scrollIntoView({ behavior: 'smooth' });
+        if (addVideoBtn) addVideoBtn.focus();
+      } else {
+        signInAdmin();
+      }
+    });
+  }
+
   if (typeof firebase !== 'undefined') {
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var auth = firebase.auth();
     var db = firebase.firestore();
     var cloudNodes = [];
+
+    auth.getRedirectResult().catch(function (err) {
+      if (err && err.message) window.alert('Sign-in failed: ' + err.message);
+    });
 
     function clearCloudReels() {
       cloudNodes.forEach(function (n) { n.remove(); });
@@ -274,16 +299,28 @@ var REELS = [
       /* Firestore unavailable or rules not set yet — keep static REELS visible */
     });
 
-    function signInAdmin() {
+    signInAdmin = function () {
+      if (window.location.protocol === 'file:') {
+        window.alert('Google Sign-In cannot run on file:///. Open the site via http://localhost:5500 or GitHub Pages.');
+        return;
+      }
       var provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
       auth.signInWithPopup(provider).catch(function (err) {
-        if (err && (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment')) {
-          auth.signInWithRedirect(provider);
-        } else if (err && err.code !== 'auth/popup-closed-by-user') {
-          window.alert('Sign-in failed: ' + err.message);
+        if (!err) return;
+        if (err.code === 'auth/popup-blocked') {
+          if (window.self === window.top) {
+            auth.signInWithRedirect(provider);
+          } else {
+            window.alert('Popup was blocked inside the preview pane. Open http://localhost:5500 in Chrome or Edge to sign in.');
+          }
+        } else if (err.code === 'auth/operation-not-supported-in-this-environment') {
+          window.alert('Google Sign-In is blocked in this preview browser. Open http://localhost:5500 directly in Chrome or Edge.');
+        } else if (err.code !== 'auth/popup-closed-by-user') {
+          window.alert('Sign-in failed (' + err.code + '): ' + err.message);
         }
       });
-    }
+    };
 
     auth.onAuthStateChanged(function (user) {
       if (user) {
@@ -304,18 +341,6 @@ var REELS = [
         }
       }
     });
-
-    var adminTrigger = document.getElementById('adminTrigger');
-    if (adminTrigger) {
-      adminTrigger.addEventListener('click', function () {
-        if (adminActive) {
-          var reelsSec = document.getElementById('reels');
-          if (reelsSec) reelsSec.scrollIntoView({ behavior: 'smooth' });
-        } else {
-          signInAdmin();
-        }
-      });
-    }
 
     document.addEventListener('keydown', function (e) {
       if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
